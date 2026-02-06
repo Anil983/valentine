@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Will You Be My Valentine?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        overflow: hidden;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        background: white;
+        padding: 40px 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        position: relative;
+        width: 90vw;
+        max-width: 600px;
+        min-height: 220px;
+      }
+
+      h1 {
+        color: #e91e63;
+        margin-bottom: 30px;
+      }
+
+      button {
+        padding: 12px 25px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 10px;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      #yesBtn {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      #yesBtn:hover {
+        transform: scale(1.1);
+      }
+
+      #noBtn {
+        background-color: #f44336;
+        color: white;
+        position: absolute;
+        left: 60%;
+        top: 65%;
+      }
+
+      #message {
+        margin-top: 20px;
+        font-size: 24px;
+        color: #e91e63;
+        font-weight: bold;
+      }
+
+      /* Floating hearts */
+      .heart {
+        position: fixed;
+        bottom: -20px;
+        font-size: 20px;
+        animation: floatUp linear forwards;
+        pointer-events: none;
+      }
+
+      /* Sparkles */
+      .sparkle {
+        position: absolute;
+        font-size: 14px;
+        color: gold;
+        pointer-events: none;
+        animation: sparkleAnim 1.5s linear forwards;
+      }
+
+      @keyframes sparkleAnim {
+        0% {
+          transform: scale(0.5);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5) translateY(-20px);
+          opacity: 0;
+        }
+      }
+
+      @keyframes floatUp {
+        to {
+          transform: translateY(-110vh);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <img
+        id="couplePhoto"
+        src="photo.jpg"
+        alt="Our Photo"
+        style="
+          width: 120px;
+          height: 120px;
+          object-fit: cover;
+          border-radius: 50%;
+          margin-bottom: 15px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+          border: 4px solid #fff;
+        "
+      />
+
+      <h1>💖 A Little Message For You 💖</h1>
+      <p
+        style="
+          font-size: 18px;
+          color: #555;
+          max-width: 420px;
+          margin: 0 auto 15px auto;
+          line-height: 1.5;
+        "
+      >
+        We’re already married… which means you’re stuck with me forever 😄💍<br /><br />
+        But honestly, I’d still choose you again and again — for the laughs, the
+        silly moments, and even for sharing our food. 🍕❤️<br /><br />
+        You’re my favorite person, my permanent Valentine, and my best decision
+        ever. 🥰<br /><br />
+        So tell me… will you be my Valentine again this year?
+      </p>
+
+      <h2 style="color: #e91e63; margin-top: 20px">
+        Will you be my Valentine? ❤️
+      </h2>
+
+      <button id="yesBtn" onclick="sayYes()">Yes 💖</button>
+      <button id="noBtn">No 😢</button>
+
+      <div id="message"></div>
+
+      <audio id="bgMusic" src="music.mp3" autoplay loop></audio>
+    </div>
+
+    <script>
+      const noBtn = document.getElementById("noBtn");
+      const container = document.getElementById("container");
+
+      function moveButton() {
+        const containerRect = container.getBoundingClientRect();
+
+        const maxX = container.clientWidth - noBtn.offsetWidth;
+        const maxY = container.clientHeight - noBtn.offsetHeight;
+
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        noBtn.style.left = randomX + "px";
+        noBtn.style.top = randomY + "px";
+      }
+
+      // Works for desktop hover
+      noBtn.addEventListener("mouseenter", moveButton);
+
+      // Works for mobile touch
+      noBtn.addEventListener("touchstart", function (e) {
+        e.preventDefault();
+        moveButton();
+      });
+
+      // Works for modern devices (pointer events)
+      noBtn.addEventListener("pointerdown", function (e) {
+        if (e.pointerType === "touch") {
+          moveButton();
+        }
+      });
+
+      function sayYes() {
+        document.getElementById("message").innerHTML =
+          "Yay! ❤️ Best decision ever! 💍";
+
+        // Optional: hide buttons
+        noBtn.style.display = "none";
+        document.getElementById("yesBtn").style.display = "none";
+      }
+
+      // Set initial proper position (next to Yes button visually)
+      function setInitialPosition() {
+        const yesBtn = document.getElementById("yesBtn");
+        const yesRect = yesBtn.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+
+        const offsetLeft = yesRect.right - containerRect.left + 10;
+        const offsetTop = yesRect.top - containerRect.top;
+
+        noBtn.style.left = offsetLeft + "px";
+        noBtn.style.top = offsetTop + "px";
+      }
+
+      setInitialPosition();
+
+      // Sparkles around photo
+      const photo = document.getElementById("couplePhoto");
+
+      setInterval(() => {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.innerHTML = "✨";
+
+        const rect = photo.getBoundingClientRect();
+
+        const x = rect.left + Math.random() * rect.width;
+        const y = rect.top + Math.random() * rect.height;
+
+        sparkle.style.left = x + "px";
+        sparkle.style.top = y + "px";
+
+        document.body.appendChild(sparkle);
+
+        setTimeout(() => sparkle.remove(), 1500);
+      }, 300);
+
+      // Try autoplay music (may require first interaction on mobile)
+      const music = document.getElementById("bgMusic");
+      document.body.addEventListener(
+        "click",
+        () => {
+          music.play().catch(() => {});
+        },
+        { once: true }
+      );
+
+      // Floating hearts animation
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤️";
+
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = Math.random() * 3 + 3 + "s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 6000);
+      }, 400);
+    </script>
+  </body>
+</html>
